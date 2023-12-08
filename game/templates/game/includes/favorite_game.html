@@ -1,0 +1,38 @@
+<div class=" mb-2">
+    {% csrf_token %}
+    <button id="favorite-game" class="btn btn-primary">
+        {% if is_favorite %}
+            Remove from Favorite List
+        {% else %}
+            Add to Favorite List
+        {% endif %}
+    </button>
+</div>
+<script>
+    $(document).ready(function() {
+        const btnFavorite = $("#favorite-game");
+        btnFavorite.click(function() {                
+            $.ajax({
+                beforeSend: function(request) {
+                    request.setRequestHeader(
+                        "X-CSRFTOKEN",
+                        $('input[name="csrfmiddlewaretoken"]').prop("value")
+                    );
+                },
+                url: "{% url 'game:favorite_game' %}",
+                method: "POST",
+                data: {
+                    gameid: {{game.id}}
+                },
+                dataType: "json",
+                success(data) {
+                    location.href = "{% url 'game:favorite_game' %}"                    
+                },
+                error(xhr, error) {
+                    console.debug(xhr);
+                    console.debug(error);
+                },
+            });
+        });
+    }); 
+</script>

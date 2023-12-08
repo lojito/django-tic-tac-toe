@@ -1,0 +1,21 @@
+body {
+    background-color: darkseagreen;
+}
+
+.welcome {
+    font-weight: bold;
+    margin: 10px 0;
+    text-align: center;
+}
+
+.navbar-light .navbar-nav .active>.nav-link {
+    font-weight: bold;
+    color: #2f702f;
+}
+
+@media (max-width: 576px){
+    .list-group div{
+        display: block!important;
+        text-align: center;
+    }
+}

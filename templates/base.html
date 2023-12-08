@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="description" content="Tic-Tac-Toe game">
+    <meta name="keywords" content="User, Computer">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous" />
+    <link rel="icon" type="image/jpg" href="{% static 'images/logo.jpg' %}" />
+    <link rel="stylesheet" href="{% static 'css/app.css' %}" />
+    {% block css_files %}
+    {% endblock css_files %}
+    <title>
+      {% block title %}
+        Tic-Tac-Toe 4x4
+      {% endblock title %}
+    </title>
+  </head>
+  <body>
+    {% include "nav.html" %}
+    {% include "scripts.html" %}
+    {% if user.is_authenticated %}<div class="welcome">Welcome back, {{ user.username }}</div>{% endif %}
+    <div class="container">
+      {% block content %}
+      {% endblock content %}
+    </div>
+  </body>
+</html>

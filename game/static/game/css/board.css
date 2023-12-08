@@ -1,0 +1,59 @@
+.board {
+    font-size: 0;
+}
+
+.board button {
+    width: 25%;
+    border: 1px solid #000;
+    display: inline-block;
+    background-size: 100% 100%;
+}
+
+.board button:after {
+    content: "";
+    display: block;
+    padding-bottom: 100%;
+}
+
+.win {
+    animation: win 1s 3;
+    opacity: 0.7;
+}
+
+@keyframes win {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0.7;
+    }
+}
+
+#question {
+    display: none;
+}
+
+.btn-danger {
+    vertical-align: top;
+}
+
+form {
+    display: inline;
+}
+
+.wrapper {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.wrapper div {
+    margin-left: 5px;
+}
+
+@media (max-width: 320px){
+    .wrapper {
+        display: block;
+        text-align: center;
+        margin-left: 0;
+    }
+}

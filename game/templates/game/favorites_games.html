@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+    {{ block.super }}
+    Favorites games
+{% endblock title %}
+{% block content %}
+    {% include "game/includes/header.html" with header_text="Favorite Game" %}
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-10">
+            {% if games %}
+                <div class="list-group">
+                    {% for game in games %}
+                        <a href="{% url 'game:game_finished' game.id %}"
+                           class="list-group-item list-group-item-action">
+                            <div class="d-inline-block mr-4">
+                                <b>Finished on:</b>
+                                {{ game.created_date | date:'M j Y H:i' }}
+                            </div>
+                            <div class="d-inline-block mr-5">
+                                <b>Favorite game:</b>
+                                Yes
+                            </div>
+                            <div class="d-inline-block">
+                                <b>Result:</b>
+                                {% if game.winner == COMPUTER %}
+                                    {{ MESSAGE_LOST }}
+                                {% elif game.winner == USER %}
+                                    {{ MESSAGE_WON }}
+                                {% else %}
+                                    {{ MESSAGE_TIE }}
+                                {% endif %}
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center">
+                    <h4>Looks like you don't have any favorite game!</h4>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}

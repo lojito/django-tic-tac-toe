@@ -1,0 +1,52 @@
+{% load static %}
+<nav class="navbar navbar-expand-md navbar-light bg-success">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'home' %}">
+      <img src="{% static 'images/logo.jpg' %}"
+           width="30"
+           height="30"
+           class="d-inline-block align-top"
+           alt="logo" />
+      <span>Tic-Tac-Toe 4x4</span>
+    </a>
+    <button class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      {% if user.is_authenticated %}
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'game:new_game' %}">New</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'game:unfinished_games' %}">Unfinished</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'game:finished_games' %}">Finished</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'game:favorite_game' %}">Favorite</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'accounts:logout_user' %}">Logout</a>
+          </li>
+        </ul>
+      {% else %}
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'accounts:signup_user' %}">Sign Up</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'accounts:login_user' %}">Login</a>
+          </li>
+        </ul>
+      {% endif %}
+    </div>
+  </div>
+</nav>

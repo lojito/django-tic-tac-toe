@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+  {{ block.super }} New game
+{% endblock title %}
+{% block content %}
+  {% block css_files %}
+    <link rel="stylesheet" href="{% static 'game/css/board.css' %}" />
+  {% endblock css_files %}
+  <div class="row justify-content-center mt-4">
+    <h5>Click on any square to start playing.</h5>
+    {% csrf_token %}
+  </div>
+  <div class="row justify-content-center mt-4">
+    <div class="col-sm-12 col-md-11 col-lg-7">
+      {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
+      <div class="board">
+        {% get_static_prefix as STATIC_URL %}
+        {% for player in game.board %}
+          <button id="{{ forloop.counter0 }}"
+                  class="square"
+                  style="background-image: url('{{ STATIC_URL }}game/images/no_player_yet.jpg')"></button>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="row justify-content-center mt-4">
+    <div class="col-sm-12 col-md-11 col-lg-7">
+      <div class="wrapper">
+        <div class="mb-2">
+          <h5 id="result"></h5>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% include "game/includes/javascript.html" %}
+{% endblock content %}

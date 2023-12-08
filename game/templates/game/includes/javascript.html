@@ -1,0 +1,137 @@
+{% load static %}
+<script>
+  $(document).ready(function () {
+    class TicTacToe {
+      static gameFinishUrl = "{% url 'game:save_game'%}";
+      static gamePlayUrl = "{% url 'game:play_game'%}";
+      static gameHasWonUrl = "{% url 'game:won_game'%}";
+      static USER = {{ USER}};
+      static COMPUTER = {{ COMPUTER }};
+      static NO_PLAYER_YET = {{ NO_PLAYER_YET }};
+
+      constructor() {
+        const game = this;
+        this.over = false;
+        this.board = Array({{ SQUARES_NUMBER }}).fill(TicTacToe.NO_PLAYER_YET);
+        this.squares = $(".square");
+        this.result = $("#result");
+  
+        this.squares.each(function (square) {
+          game.initBoard(this, square);
+  
+          $(this).click(function () {
+            if (!game.over) {
+              game.processPlay(TicTacToe.USER, this.id);
+            }
+          });
+        });
+      }
+  
+      initBoard(squareDom, square) {
+        const NOT_FOUND = -1;
+        const backgroundImage = squareDom.style.backgroundImage;
+  
+        if (backgroundImage.indexOf("no_player_yet") !== NOT_FOUND) {
+          this.board[square] = TicTacToe.NO_PLAYER_YET;
+        } else if (backgroundImage.indexOf("user") !== NOT_FOUND) {
+          this.board[square] = TicTacToe.USER;
+        } else {
+          this.board[square] = TicTacToe.COMPUTER;
+        }
+      }
+  
+      updateBoard(player, index) {
+        $(this.squares[index]).prop("disabled", true);
+        const image =
+          player === TicTacToe.USER
+            ? "{% static 'game/images/user.jpg' %}"
+            : "{% static 'game/images/computer.jpg' %}";
+        $(this.squares[index]).css("backgroundImage", "url(" + image + ")");
+        this.board[index] = player;
+      }
+  
+      processPlay(player, index) {
+        this.updateBoard(player, index);
+        this.doAjax(TicTacToe.gameHasWonUrl, player);
+      }
+  
+      finalizeGame(player, winningSquares) {
+        this.over = true;
+        this.squares.prop("disabled", true);
+        let data = {
+          winner: TicTacToe.NO_PLAYER_YET,
+          squares: "",
+        };
+        if (winningSquares.length) {
+          if (player === TicTacToe.USER) {
+            this.result.text("{{ MESSAGE_WON }}");
+            data.winner = TicTacToe.USER;
+          } else {
+            this.result.text("{{ MESSAGE_LOST }}");
+            data.winner = TicTacToe.COMPUTER;
+          }
+          for (let index = 0; index < {{ WINNING_SQUARES_NUMBER }}; index++) {
+            this.squares.eq(winningSquares[index]).addClass("win");
+          }
+          data.squares = winningSquares.join(",");
+        } else {
+          this.result.text("{{ MESSAGE_TIE }}");
+        }
+        this.doAjax(TicTacToe.gameFinishUrl, TicTacToe.USER, data);
+      }
+  
+      processErrors(data) {
+        this.squares.prop("disabled", true);
+        this.result.text(
+          "The server responded with an error. You may not be able to continue playing at this time. Check the console log."
+        );
+        console.log(data.error);
+      }
+  
+      doAjax(url, player = TicTacToe.USER, data = {}) {
+        const game = this;
+  
+        $.ajax({
+          beforeSend: function (request) {
+            request.setRequestHeader(
+              "X-CSRFTOKEN",
+              $('input[name="csrfmiddlewaretoken"]').prop("value")
+            );
+          },
+          url,
+          method: "POST",
+          data: {
+            board: game.board.join(""),
+            player,
+            gameid: {{ game.id }},
+            ...data,
+          },
+          dataType: "json",
+          success(data) {
+            if (data.error !== "") {
+              game.processErrors(data);
+            } else if (url === TicTacToe.gamePlayUrl) {
+              game.processPlay(TicTacToe.COMPUTER, data["squareComputer"]);
+            } else if (url === TicTacToe.gameHasWonUrl) {
+              if (
+                data["won"] === "True" ||
+                !game.board.includes(TicTacToe.NO_PLAYER_YET)
+              ) {
+                game.finalizeGame(player, JSON.parse(data["winningSquares"]));
+              } else if (player === TicTacToe.USER) {
+                game.doAjax(TicTacToe.gamePlayUrl, TicTacToe.COMPUTER);
+              }
+            }
+          },
+          error(xhr, error) {
+            console.debug(xhr);
+            console.debug(error);
+          },
+        });
+      }
+    }
+  
+    new TicTacToe();
+  });
+  
+</script>

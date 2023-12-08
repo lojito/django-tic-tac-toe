@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}
+  {{ block.super }} Sign up
+{% endblock title %}
+{% block content %}
+  <div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+      <h3>Sign Up</h3>
+    </div>
+  </div>
+  <div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+      {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
+      <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="form-group">
+            {{ field.label_tag }}
+            {{ field }}
+            {{ field.errors }}
+          </div>
+        {% endfor %}
+        <div class="text-right">
+          <button type="submit" class="btn btn-primary">Sign Up</button>
+        </div>
+      </form>
+      <hr />
+      <div class="text-center">
+        You already have an account?
+        <a href="{% url 'accounts:login_user' %}">Login here</a>
+      </div>
+    </div>
+  </div>
+  <script>
+    $(document).ready(function () {
+      $("form input").addClass("form-control");    
+    });
+  </script>
+{% endblock content %}
